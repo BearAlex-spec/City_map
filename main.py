@@ -1,5 +1,6 @@
 from opencage.geocoder import OpenCageGeocode
 from tkinter import *
+import webbrowser
 
 result = ""
 def get_coordinates(city, key):
@@ -11,22 +12,31 @@ def get_coordinates(city, key):
             lan = round(results[0]['geometry']['lng'], 2)
             country = results [0]["components"]["country"]
             name_val = results[0]["annotations"]["currency"]["name"]
+            osm_url = f"https://www.openstreetmap.org/?mlat={lat}&mlon={lan}"
 
             if "state" in results[0]["components"]:
                 region = results[0]["components"]["state"]
-                return f"широта: {lat}, долгота: {lan} \n Страна: {country} \n Валюта: {name_val} \n Регион: {region}"
+                return {
+                    "coordinates": f"широта: {lat}, долгота: {lan} \n Страна: {country} \n Валюта: {name_val} \n Регион: {region}",
+                "map_url": osm_url
+                        }
             else:
-                return f"широта: {lat}, долгота: {lan} \n Страна: {country} \n Валюта: {name_val}"
+                return {
+                    "coordinates": f"широта: {lat}, долгота: {lan} \n Страна: {country} \n Валюта: {name_val}",
+                "map_url": osm_url
+                        }
         else:
             return "Город не найден"
     except Exception as e:
         return f"Возникла ошибка: {e}"
 
 def show_coordinates(event = None):
-    city = entry.get()
-    coordinates = get_coordinates(city, key)
-    label.config(text = f"Координаты города {city}: \n {coordinates}")
+    global map_url
 
+    city = entry.get()
+    result = get_coordinates(city, key)
+    label.config(text = f"Координаты города {city}: \n {result["coordinates"]}")
+    map_url = result["map_url"]
 
 
 def clear_entry():
@@ -34,7 +44,12 @@ def clear_entry():
     entry.delete(0, END)
 
 
+def show_map():
+    if map_url:
+        webbrowser.open(map_url)
+
 key = 'c3626e750a6d4b9fa2df917627e3a783'
+map_url = ""
 
 window = Tk()
 window.title("Координаты городов")
@@ -51,6 +66,9 @@ button.pack()
 
 label = Label(text = "Введите город и нажмите на кнопку")
 label.pack()
+
+map_button = Button(text = "Показать карту", command = show_map)
+map_button.pack()
 
 button_clear = Button (text = "Очистить поле ввода", command = clear_entry)
 button_clear.pack()
