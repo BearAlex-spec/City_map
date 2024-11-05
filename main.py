@@ -1,6 +1,7 @@
 from opencage.geocoder import OpenCageGeocode
 from tkinter import *
 
+result = ""
 def get_coordinates(city, key):
     try:
         geocoder = OpenCageGeocode(key)
@@ -26,6 +27,13 @@ def show_coordinates(event = None):
     coordinates = get_coordinates(city, key)
     label.config(text = f"Координаты города {city}: \n {coordinates}")
 
+
+
+def clear_entry():
+    label.config(text = "Введите город и нажмите на кнопку")
+    entry.delete(0, END)
+
+
 key = 'c3626e750a6d4b9fa2df917627e3a783'
 
 window = Tk()
@@ -39,7 +47,12 @@ entry.bind("<Return>", show_coordinates)
 button = Button( text ="Поиск координат", command = show_coordinates)
 button.pack()
 
+
+
 label = Label(text = "Введите город и нажмите на кнопку")
 label.pack()
+
+button_clear = Button (text = "Очистить поле ввода", command = clear_entry)
+button_clear.pack()
 
 window.mainloop()
