@@ -22,13 +22,13 @@ def show_coordinates():
 key = 'c3626e750a6d4b9fa2df917627e3a783'
 
 window = Tk()
-window.title(text = "Координаты городов")
-window.geometry("400x300")
+window.title("Координаты городов")
+window.geometry("400x350")
 
 entry = Entry()
 entry.pack()
 
-button = Button("Поиск координат", command = get_coordinates)
+button = Button( text ="Поиск координат", command = show_coordinates)
 button.pack()
 
 label = Label(text = "Введите город и нажмите на кнопку")
